@@ -5982,3 +5982,69 @@ func Test_DownloadKyverno(t *testing.T) {
 		}
 	}
 }
+
+func Test_DownloadBuildKit(t *testing.T) {
+	tools := MakeTools()
+	name := "buildkitd"
+
+	tool := getTool(name, tools)
+
+	const toolVersion = "v0.11.6"
+
+	tests := []test{
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     `https://github.com/moby/buildkit/releases/download/v0.11.6/buildkit-v0.11.6.linux-amd64.tar.gz`,
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: toolVersion,
+			url:     `https://github.com/moby/buildkit/releases/download/v0.11.6/buildkit-v0.11.6.linux-arm64.tar.gz`,
+		},
+		{
+			os:      "linux",
+			arch:    archARM7,
+			version: toolVersion,
+			url:     `https://github.com/moby/buildkit/releases/download/v0.11.6/buildkit-v0.11.6.linux-arm-v7.tar.gz`,
+		},
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     `https://github.com/moby/buildkit/releases/download/v0.11.6/buildkit-v0.11.6.darwin-amd64.tar.gz`,
+		},
+		{
+			os:      "darwin",
+			arch:    archARM64,
+			version: toolVersion,
+			url:     `https://github.com/moby/buildkit/releases/download/v0.11.6/buildkit-v0.11.6.darwin-arm64.tar.gz`,
+		},
+		{
+			os:      "ming",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     `https://github.com/moby/buildkit/releases/download/v0.11.6/buildkit-v0.11.6.windows-amd64.tar.gz`,
+		},
+		{
+			os:      "ming",
+			arch:    archARM64,
+			version: toolVersion,
+			url:     `https://github.com/moby/buildkit/releases/download/v0.11.6/buildkit-v0.11.6.windows-arm64.tar.gz`,
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
+			got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got != tc.url {
+				t.Errorf("want: %s, got: %s", tc.url, got)
+			}
+		})
+	}
+}

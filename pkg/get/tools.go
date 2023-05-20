@@ -3487,5 +3487,37 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 				{{- end -}}
 				https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}-cli_{{.Version}}_{{$os}}_{{$arch}}.{{$extStr}}`,
 		})
+
+	tools = append(tools,
+		Tool{
+			Owner:       "moby",
+			Repo:        "buildkit",
+			Name:        "buildkitd",
+			Description: "CLI plugin enhancing the Docker build process",
+			BinaryTemplate: `
+					{{$osStr := ""}}
+					{{ if HasPrefix .OS "ming" -}}
+					{{$osStr = "windows"}}
+					{{- else if eq .OS "linux" -}}
+					{{$osStr = "linux"}}
+					{{- else if eq .OS "darwin" -}}
+					{{$osStr = "darwin"}}
+					{{- end -}}
+
+					{{$archStr := .Arch}}
+					{{- if eq .Arch "armv6l" -}}
+					{{$archStr = "arm-v6"}}
+					{{- else if eq .Arch "armv7l" -}}
+					{{$archStr = "arm-v7"}}
+					{{- else if or (eq .Arch "aarch64") (eq .Arch "arm64") -}}
+					{{$archStr = "arm64"}}
+					{{- else if eq .Arch "x86_64" -}}
+					{{$archStr = "amd64"}}
+					{{- end -}}
+
+					{{$archiveStr := "tar.gz"}}
+
+					{{.Version}}/buildkit-{{.Version}}.{{$osStr}}-{{$archStr}}.{{$archiveStr}}`,
+		})
 	return tools
 }
